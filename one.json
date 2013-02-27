@@ -1,0 +1,19 @@
+{
+    "name": "pipedream",
+    "version": "0.0.1",
+    "repository": "",
+    "author": "Denis Bardadym <bardadymchik@gmail.com>",
+    "main": "app/client/app.js",
+    "dependencies": {
+        "lodash": "~1.0.1",
+        "backbone": "~0.9.10",
+        "dust": "~0.3.0"
+    },
+    "web": {
+        "save": "bundle.js",
+        "alias": {
+            "underscore": "lodash"
+        },
+        "exclude": ["underscore", "express"]
+    }
+}

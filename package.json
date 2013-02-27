@@ -3,7 +3,10 @@
   "version": "0.0.1",
   "description": "Example of application that can share sources between server and client",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --require should --reporter spec --recursive tests"
+    "test": "mocha --require should --reporter spec --recursive tests",
+    "browserify": "browserify --deps ./app/client/app.js -o client.js",
+    "browserbuild": "browserbuild -d -m app `find app -name '*.js' | grep -ve server` > my-library.js",
+    "one": "onejs build one.json"
   },
   "repository": "",
   "author": "Denis Bardadym <bardadymchik@gmail.com>",
@@ -13,12 +16,21 @@
     "stitch": "~0.3.3",
     "mocha": "~1.8.1",
     "should": "~1.2.2",
-    "supertest": "~0.5.1"
+    "supertest": "~0.5.1",
+    "browserify": "~2.2.5",
+    "one": "~2.0.4"
   },
   "dependencies": {
     "lodash": "~1.0.1",
     "backbone": "~0.9.10",
     "dust": "~0.3.0",
     "express": "~3.1.0"
+  },
+  "web": {
+      "save": "bundle.js",
+      "alias": {
+          "underscore": "lodash"
+      },
+      "exclude": ["underscore", "express"]
   }
 }
