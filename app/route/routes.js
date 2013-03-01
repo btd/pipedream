@@ -1,3 +1,3 @@
 module.exports = function(match) {
-    match('a', 'a');
+    match('/a', 'a');
 };

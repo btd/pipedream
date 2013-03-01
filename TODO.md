@@ -37,3 +37,14 @@
 ### stitch
 
 - Do not take npm dependencies !!!
+
+
+## What i need to browser bundler
+
+1. It should be able to find node dependencies
+
+2. DONE.~~It should not be restrected to begin work on one file.~~
+
+3. Should allow create aliases.
+
+Ok, working bundler from browserbuild but was need to patch backbone (maybe need to add support for set dependencies via exports?)

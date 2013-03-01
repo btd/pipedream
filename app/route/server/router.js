@@ -12,7 +12,7 @@ module.exports = ServerRouter = function() {
         _(this.routes).each(function(route) {
             console.log(route);
             var action = this.getAction(route.definition);
-            this.app.get('/' + route.pattern, function(req, res) {
+            this.app.get(route.pattern, function(req, res) {
                 // just call it for now
                 var result = action();
 

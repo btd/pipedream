@@ -6,3 +6,7 @@ var router = new ClientRouter({
         routes: '../route/routes'
     }
 });
+
+router.start();
+
+router.navigate('/a');

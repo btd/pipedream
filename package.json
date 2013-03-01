@@ -4,33 +4,21 @@
   "description": "Example of application that can share sources between server and client",
   "scripts": {
     "test": "mocha --require should --reporter spec --recursive tests",
-    "browserify": "browserify --deps ./app/client/app.js -o client.js",
-    "browserbuild": "browserbuild -d -m app `find app -name '*.js' | grep -ve server` > my-library.js",
-    "one": "onejs build one.json"
+    "browserbuild": "browserbuild -d --aliases underscore.js=lodash.js -b 'libs/' `find app libs -name '*.js' | grep -ve server` > browserbuild-bundle.js"
   },
   "repository": "",
   "author": "Denis Bardadym <bardadymchik@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "browserbuild": "~0.6.0",
-    "stitch": "~0.3.3",
     "mocha": "~1.8.1",
     "should": "~1.2.2",
-    "supertest": "~0.5.1",
-    "browserify": "~2.2.5",
-    "one": "~2.0.4"
+    "supertest": "~0.5.1"
   },
   "dependencies": {
     "lodash": "~1.0.1",
     "backbone": "~0.9.10",
     "dust": "~0.3.0",
     "express": "~3.1.0"
-  },
-  "web": {
-      "save": "bundle.js",
-      "alias": {
-          "underscore": "lodash"
-      },
-      "exclude": ["underscore", "express"]
   }
 }
