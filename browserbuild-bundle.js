@@ -185,20 +185,22 @@ var router = new ClientRouter({
 
 router.start();
 
-router.navigate('a');
+router.navigate('a/123/a/abac/sdfs', { trigger: true });
 });
 require.register("app/controllers/a.js", function(module, exports, require){
 module.exports = {
-    index: function() {
+    index:function (params, callback) {
         console.log('index called');
-        return 'index';
+        console.log(params);
+        return callback && callback(null, 'index');
     },
 
-    show: function() {
+    show:function (params) {
+        console.log(params);
         console.log('show called');
         return 'show';
     }
-}
+};
 });
 require.register("app/route/client/router.js", function(module, exports, require){
 
@@ -206,23 +208,38 @@ var Backbone = require('backbone');
 var _ = require('lodash');
 var BaseRouter = require('../router');
 
+
+
 module.exports = ClientRouter = function() {
     var ClientRouter = function(options) {
         BaseRouter.call(this, options);
-
-        console.log(options);
 
         this._router = new Backbone.Router;
         this.buildRoutes();
 
         _(this.routes).each(function(route) {
-            console.log(route);
+
+            var paramNames = this.paramNames(route);
+
+            //third argument for callback will be a function(err, view_name, data) that will populate template
             this._router.route(
-                route.pattern,
+                route.pattern.indexOf('/') === 0 ? route.pattern.substr(1): route.pattern,
                 route.definition.controller + '#' + route.definition.action,
-                this.getAction(route.definition)
+                bindNamesToArguments(paramNames, this.getAction(route.definition))
             );
         }, this);
+    };
+
+    var bindNamesToArguments = function(paramNames, callback) {
+        var params = {};
+        var otherArgs = Array.prototype.slice.call(arguments, 2);
+        return function() {
+            var args = arguments;
+            _(paramNames).each(function(p, idx) {
+               params[p.substr(1)] = args[idx];
+            });
+            callback.apply(this, [params].concat(otherArgs));
+        };
     };
 
     _.extend(ClientRouter.prototype, BaseRouter.prototype, {
@@ -266,8 +283,6 @@ module.exports = BaseRouter = function() {
             var that = this;
             var routesBuild = require(this.options.paths.routes);
 
-            console.log(routesBuild);
-
             var takeRoute = function() {
                 var uriPattern = arguments[0];
                 var definition = Array.prototype.slice.call(arguments, 1);
@@ -294,6 +309,14 @@ module.exports = BaseRouter = function() {
 
             if(rawDefinition[1]) _.extend(definition, rawDefinition[1]);
             return definition;
+        },
+
+        // this is how backbone parse :named and *splat parameters, i think for begining it is more then enough
+        namedParam: /(\(\?)?:\w+/g,
+        splatParam: /\*\w+/g,
+
+        paramNames: function(route) {
+            return (route.pattern.match(this.namedParam) || []).concat(route.pattern.match(this.splatParam) || []);
         }
     });
 
@@ -304,6 +327,8 @@ module.exports = BaseRouter = function() {
 require.register("app/route/routes.js", function(module, exports, require){
 module.exports = function(match) {
     match('a', 'a');
+    match('a/:id', 'a#show');
+    match('a/:a/:b/*other', 'a');
 };
 });
 require.register("backbone.js", function(module, exports, require){
@@ -350,7 +375,7 @@ require.register("backbone.js", function(module, exports, require){
   if (!_ && (typeof require !== 'undefined')) _ = require('underscore');
 
   // For Backbone's purposes, jQuery, Zepto, or Ender owns the `$` variable.
-  if(window) Backbone.$ = window.jQuery || window.Zepto || window.ender;
+  if(typeof window !== 'undefined') Backbone.$ = window.jQuery || window.Zepto || window.ender;
 
   // Runs Backbone.js in *noConflict* mode, returning the `Backbone` variable
   // to its previous owner. Returns a reference to this Backbone object.

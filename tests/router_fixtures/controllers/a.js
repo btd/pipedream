@@ -1,12 +1,14 @@
 
 module.exports = {
-    index: function() {
+    index: function(params) {
+        console.log(params);
         console.log('index called');
         return 'index';
     },
 
-    show: function() {
+    show: function(params) {
+        console.log(params);
         console.log('show called');
         return 'show';
     }
-}
+};

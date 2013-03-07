@@ -1,11 +1,13 @@
 module.exports = {
-    index: function() {
+    index:function (params, callback) {
         console.log('index called');
-        return 'index';
+        console.log(params);
+        return callback && callback(null, 'index');
     },
 
-    show: function() {
+    show:function (params) {
+        console.log(params);
         console.log('show called');
         return 'show';
     }
-}
+};

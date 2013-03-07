@@ -24,8 +24,6 @@ module.exports = BaseRouter = function() {
             var that = this;
             var routesBuild = require(this.options.paths.routes);
 
-            console.log(routesBuild);
-
             var takeRoute = function() {
                 var uriPattern = arguments[0];
                 var definition = Array.prototype.slice.call(arguments, 1);
@@ -52,6 +50,14 @@ module.exports = BaseRouter = function() {
 
             if(rawDefinition[1]) _.extend(definition, rawDefinition[1]);
             return definition;
+        },
+
+        // this is how backbone parse :named and *splat parameters, i think for begining it is more then enough
+        namedParam: /(\(\?)?:\w+/g,
+        splatParam: /\*\w+/g,
+
+        paramNames: function(route) {
+            return (route.pattern.match(this.namedParam) || []).concat(route.pattern.match(this.splatParam) || []);
         }
     });
 

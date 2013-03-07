@@ -9,4 +9,4 @@ var router = new ClientRouter({
 
 router.start();
 
-router.navigate('/a');
+router.navigate('a/123/a/abac/sdfs', { trigger: true });

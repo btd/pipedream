@@ -69,4 +69,9 @@ describe('server router', function() {
                     });
             });
     });
+    it.only('should parse params', function(done) {
+        request(app)
+            .get('/a/15/b/c/werw')
+            .end(done);
+    });
 });

@@ -8,7 +8,6 @@ module.exports = app = function(options) {
     app.use(express.bodyParser());
     app.use(express.methodOverride());
 
-    console.log(options);
 
     var router = new ServerRouter(_.extend(options, {
         app: app

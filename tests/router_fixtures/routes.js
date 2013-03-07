@@ -3,4 +3,5 @@ module.exports = function(match) {
     match('a',     'a');
 
     match('',      'a');
-}
+    match('a/:id/:a/:b/*other', 'a');
+};
