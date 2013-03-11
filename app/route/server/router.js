@@ -15,20 +15,22 @@ module.exports = ServerRouter = function() {
             var paramNames = this.paramNames(route);
             var splatParamName = (route.pattern.match(this.splatParam) || [])[0];
 
-            console.log(this._preparePattern(route.pattern));
-
             this.app.get(
                 this._preparePattern(route.pattern),
                 function(req, res) {
-                // just call it for now
-                    var result = action(copyParams(req.params, paramNames, splatParamName));
+
+                    var act = _.bind(action, null, copyParams(req.params, paramNames, splatParamName));
 
                     res.format({
                         html: function() {
-                           res.send(result);
+                            act(function(err, viewName, data) {
+                                res.render(viewName, data);
+                            });
                         },
                         json: function() {
-                            res.send({ message: result });
+                            res.send({ message: act(function(err, viewName, data) {
+
+                            }) });
                         }
                     });
             });

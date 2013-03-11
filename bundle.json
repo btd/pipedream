@@ -1,0 +1,12 @@
+{
+    "basepath": ["libs/"],
+    "shim": {
+        "app/templates/*": ["dust"],
+        "backbone": ["jquery"],
+        "underscore": "_",
+        "jquery": "jQuery"
+    },
+    "aliases": {
+        "underscore": "lodash"
+    }
+}

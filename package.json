@@ -3,8 +3,7 @@
   "version": "0.0.1",
   "description": "Example of application that can share sources between server and client",
   "scripts": {
-    "test": "mocha --require should --reporter spec --recursive tests",
-    "browserbuild": "browserbuild -d --aliases underscore.js=lodash.js -b 'libs/' `find app libs -name '*.js' | grep -ve server` > browserbuild-bundle.js"
+    "test": "mocha --require should --reporter spec --recursive tests"
   },
   "repository": "",
   "author": "Denis Bardadym <bardadymchik@gmail.com>",
@@ -14,12 +13,14 @@
     "mocha": "~1.8.1",
     "should": "~1.2.2",
     "supertest": "~0.5.1",
-    "ejs": "~0.8.3"
+    "nodemon": "~0.7.2"
   },
   "dependencies": {
     "lodash": "~1.0.1",
     "backbone": "~0.9.10",
-    "dust": "~0.3.0",
-    "express": "~3.1.0"
+    "express": "~3.1.0",
+    "dustjs-linkedin": "~1.2.1",
+    "dustjs-helpers": "~1.1.1",
+    "consolidate": "~0.8.0"
   }
 }
