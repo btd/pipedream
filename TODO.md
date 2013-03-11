@@ -12,7 +12,7 @@
 
 6. State intialization: server from db, client from first request
 
-7. Add support for dependencies in bundler (should wrap window object)
+7. ~~Add support for dependencies in bundler (should wrap window object)~~
 
 ## Test of client bundlers
 
