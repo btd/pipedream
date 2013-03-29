@@ -1,12 +1,17 @@
-var ClientRouter = require('../route/client/router');
+var Backbone = require('backbone');
+var Router = require('../route/router');
 
-var router = new ClientRouter({
+var router = new Router({
     paths: {
-        controllers: '../controllers',
-        routes: '../route/routes'
-    }
+        controllers: '../controllers'
+    },
+    routes: require('../route/routes')
 });
 
-router.start();
+Backbone.history.start({
+    pushState: true
+});
 
-router.navigate('a/123/a/abac/sdfs', { trigger: true });
+router.navigate('a/123/a/abac/sdfs', {
+    trigger: true
+});

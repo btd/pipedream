@@ -1,7 +1,34 @@
 var _ = require('lodash');
 var BaseRouter = require('../router');
 
-module.exports = ServerRouter = function() {
+module.exports = BaseRouter.extend({
+    route: function(route, name, callback) {
+        if (!_.isRegExp(route)) route = this._routeToRegExp(route);
+        if (!callback) callback = this[name];
+
+        var wrappedCallback = function(req, callback, act) {
+            return function() {
+                callback.apply(null, [act].concat(req.params || []));
+            };
+        };
+
+        this.options.app.get(route, function(req, res) {
+            res.format({
+                html: wrappedCallback(req, callback, function(err, viewName, data) {
+                    res.render(viewName, data);
+                }),
+                json: wrappedCallback(req, callback, function(err, viewName, data) {
+                    res.send(data);
+                })
+            });
+        });
+    },
+
+    _parseUrl: function(url) {
+        return url.indexOf('/') === 0 ? url : '/' + url;
+    }
+});
+/* =  function() {
     var ServerRouter = function(options) {
         BaseRouter.call(this, options);
 
@@ -16,23 +43,26 @@ module.exports = ServerRouter = function() {
             var splatParamName = (route.pattern.match(this.splatParam) || [])[0];
 
             this.app.get(
-                this._preparePattern(route.pattern),
-                function(req, res) {
+            this._preparePattern(route.pattern),
 
-                    var act = _.bind(action, null, copyParams(req.params, paramNames, splatParamName));
+            function(req, res) {
 
-                    res.format({
-                        html: function() {
-                            act(function(err, viewName, data) {
-                                res.render(viewName, data);
-                            });
-                        },
-                        json: function() {
-                            res.send({ message: act(function(err, viewName, data) {
+                var act = _.bind(action, null, copyParams(req.params, paramNames, splatParamName));
 
-                            }) });
-                        }
-                    });
+                res.format({
+                    html: function() {
+                        act(function(err, viewName, data) {
+                            res.render(viewName, data);
+                        });
+                    },
+                    json: function() {
+                        res.send({
+                            message: act(function(err, viewName, data) {
+
+                            })
+                        });
+                    }
+                });
             });
         }, this);
     };
@@ -48,9 +78,9 @@ module.exports = ServerRouter = function() {
 
     _.extend(ServerRouter.prototype, BaseRouter.prototype, {
         _preparePattern: function(pattern) {
-            return (pattern.indexOf('/') === 0 ? pattern: '/' + pattern).replace(this.splatParam, '*');
+            return (pattern.indexOf('/') === 0 ? pattern : '/' + pattern).replace(this.splatParam, '*');
         }
     });
 
     return ServerRouter;
-}();
+}();*/

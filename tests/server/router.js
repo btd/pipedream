@@ -12,7 +12,7 @@ var app = App({
         controllers: testPath('controllers'),
         routes: testPath('routes')
     }
-});
+}, __dirname + '/../views');
 
 
 describe('server router', function() {
@@ -25,7 +25,7 @@ describe('server router', function() {
             .end(function(err, res){
                 if (err) return done(err);
 
-                res.body.message.should.be.eql('index');
+                res.body.should.be.eql({ view: 'index' });
 
                 request(app)
                     .get('/a/15')
@@ -34,7 +34,7 @@ describe('server router', function() {
                     .end(function(err, res){
                         if (err) return done(err);
 
-                        res.body.message.should.be.eql('show');
+                        res.body.should.be.eql({ id: "15", view: 'show' });
                         request(app)
                             .get('/')
                             .set('Accept', 'application/json')
@@ -42,7 +42,7 @@ describe('server router', function() {
                             .end(function(err, res){
                                 if (err) return done(err);
 
-                                res.body.message.should.be.eql('index');
+                                res.body.should.be.eql({ view: 'index' });
                                 done();
                             });
                     });
@@ -57,21 +57,24 @@ describe('server router', function() {
             .end(function(err, res){
                 if (err) return done(err);
 
-                res.body.message.should.be.eql('show');
+                res.body.should.be.eql({ id: "15", view: 'show' });
                 request(app)
                     .get('/')
-                    .expect('Content-Type', /html/)
+                    //.expect('Content-Type', /html/)
                     .end(function(err, res){
                         if (err) return done(err);
-
-                        res.text.should.be.eql('index');
                         done();
                     });
             });
     });
-    it.only('should parse params', function(done) {
+    it('should parse params', function(done) {
         request(app)
             .get('/a/15/b/c/werw')
-            .end(done);
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .end(function(err, res){
+                if (err) return done(err);
+                done();
+            });
     });
 });

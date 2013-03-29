@@ -3,63 +3,70 @@
  * @param options
  * @return {Object}
  */
-//TODO.md avoid usage of underscore and check that builded client script will contain backbone and lodash
+
 var _ = require('lodash');
 var Backbone = require('backbone');
 
-module.exports = BaseRouter = function() {
-    var BaseRouter = function(options) {
+module.exports = BaseRouter = Backbone.Router.extend({
+    initialize: function(options) {
         this.options = options;
+
+        this._controllersCache = options.controllers || {};
         this.routes = [];
-    };
 
-    _.extend(BaseRouter.prototype, Backbone.Events, {
-        getController: function(name) {
-            return require((this.options.paths.controllers || 'controllers') + '/' + name);
-        },
-        getAction: function(definition) {
-            return this.getController(definition.controller)[definition.action];
-        },
-        buildRoutes: function() {
-            var that = this;
-            var routesBuild = require(this.options.paths.routes);
+        this._buildRoutes(options.routes || require(this.options.paths.routes));
 
-            var takeRoute = function() {
-                var uriPattern = arguments[0];
-                var definition = Array.prototype.slice.call(arguments, 1);
-                that.routes.push({
-                    pattern: that.parseUrl(uriPattern),
-                    definition: that.parseDefinition(definition)
-                });
-            };
+        _(this.routes).each(function(route) {
+            //for third argument _.bind will help
+            //third argument for callback will be a function(err, view_name, data) that will populate template
+            this.route(
+            route.pattern,
+            route.definition.controller + '#' + route.definition.action,
+            this._getAction(route.definition));
+        }, this);
+    },
 
-            routesBuild(takeRoute);
-        },
-        parseUrl: function(url) {
-            return url; // for now it will be as is
-        },
-
-        parseDefinition: function(rawDefinition) {
-            if(rawDefinition.length < 1) throw new Error("Route definition is empty");
-
-            var definition = {};
-
-            var splittedAction = rawDefinition[0].split('#');
-            definition.controller = splittedAction[0];
-            definition.action = splittedAction[1] ? splittedAction[1] : 'index';
-
-            if(rawDefinition[1]) _.extend(definition, rawDefinition[1]);
-            return definition;
-        },
-
-        // this is how backbone parse :named and *splat parameters, i think for begining it is more then enough
-        namedParam: /(\(\?)?:\w+/g,
-        splatParam: /\*\w+/g,
-
-        paramNames: function(route) {
-            return (route.pattern.match(this.namedParam) || []).concat(route.pattern.match(this.splatParam) || []);
+    _getController: function(name) {
+        var controller = this._controllersCache[name];
+        if (!controller) {
+            controller = require(this.options.paths.controllers + '/' + name);
+            this._controllersCache[name] = controller;
         }
-    });
+        return controller;
+    },
+    _getAction: function(definition) {
+        return this._getController(definition.controller)[definition.action];
+    },
 
-    return BaseRouter;
-}();
+    _buildRoutes: function(routesBuild) {
+        var that = this;
+
+        var takeRoute = function() {
+            var uriPattern = arguments[0];
+            var definition = Array.prototype.slice.call(arguments, 1);
+            that.routes.push({
+                pattern: that._parseUrl(uriPattern),
+                definition: that._parseDefinition(definition)
+            });
+        };
+
+        routesBuild(takeRoute);
+    },
+
+    _parseUrl: function(url) {
+        return url; // for now it will be as is
+    },
+
+    _parseDefinition: function(rawDefinition) {
+        if (rawDefinition.length < 1) throw new Error("Route definition is empty");
+
+        var definition = {};
+
+        var splittedAction = rawDefinition[0].split('#');
+        definition.controller = splittedAction[0];
+        definition.action = splittedAction[1] ? splittedAction[1] : 'index';
+
+        if (rawDefinition[1]) _.extend(definition, rawDefinition[1]);
+        return definition;
+    }
+});

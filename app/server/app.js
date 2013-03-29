@@ -1,19 +1,20 @@
 var express = require('express'),
     ServerRouter = require('../route/server/router'),
     _ = require('lodash'),
-    dust = require('dustjs-linkedin'),
-    cons = require('consolidate');
+    cons = require('consolidate'),
+    path = require('path');
 
-var tpl_engine = 'dust';
-
-module.exports = app = function(options) {
+module.exports = app = function(options, views) {
     var app = express();
-
     //templates
-    app.engine(tpl_engine, cons.dust);
-    app.set('template_engine', tpl_engine);
-    app.set('templates', __dirname + '/templates');
-    app.set('view engine', tpl_engine);
+
+    app.set('view engine', 'html');
+    app.engine('dust', cons.dust);
+    app.engine('html', cons.ejs);
+
+    app.set('views', views ||  __dirname + '/views');
+
+    app.use(express.static(path.join(__dirname, '../public')));
 
     app.use(express.logger('dev'));
     app.use(express.bodyParser());
@@ -25,10 +26,9 @@ module.exports = app = function(options) {
 
     app.use(app.router);
 
-    app.configure('development', function(){
+    app.configure('development', function() {
         app.use(express.errorHandler());
     });
 
     return app;
 };
-

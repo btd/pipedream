@@ -1,14 +1,10 @@
 
 module.exports = {
-    index: function(params) {
-        console.log(params);
-        console.log('index called');
-        return 'index';
+    index: function(callback) {
+        callback(null, 'index', {view: 'index'});
     },
 
-    show: function(params) {
-        console.log(params);
-        console.log('show called');
-        return 'show';
+    show: function(callback, id) {
+        callback(null, 'show', {id: id, view: 'show'});
     }
 };
