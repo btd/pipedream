@@ -1,19 +1,7 @@
 var Should = require('should');
 var request = require('supertest');
 
-var App = require('../../app/server/app');
-
-var testPath = function(path) {
-    return __dirname + '/../router_fixtures/' + path;
-};
-
-var app = App({
-    paths: {
-        controllers: testPath('controllers'),
-        routes: testPath('routes')
-    }
-}, __dirname + '/../views');
-
+var app = require('../../app/server/main');
 
 describe('server router', function() {
     it('should call specified in routes controller', function(done) {
@@ -60,7 +48,7 @@ describe('server router', function() {
                 res.body.should.be.eql({ id: "15", view: 'show' });
                 request(app)
                     .get('/')
-                    //.expect('Content-Type', /html/)
+                    .expect('Content-Type', /html/)
                     .end(function(err, res){
                         if (err) return done(err);
                         done();

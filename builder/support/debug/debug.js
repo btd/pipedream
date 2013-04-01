@@ -79,7 +79,7 @@ debug.disable = function(){
 /**
  * Humanize the given `ms`.
  *
- * @param {Number} m
+ * @param {Number} ms
  * @return {String}
  * @api private
  */

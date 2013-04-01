@@ -22,6 +22,10 @@ module.exports = TodoList = Backbone.Collection.extend({
     // Filter down the list to only todo items that are still not finished.
     remaining: function() {
         return this._byDone(false);
+    },
+
+    collectionName: function() {
+        return this.model.collectionName;
     }
 
 });

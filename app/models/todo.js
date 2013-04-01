@@ -1,6 +1,12 @@
-var Backbone = require('backbone');
+var helper = require('../helper');
 
-module.exports = Todo = Backbone.Model.extend({
+var BaseModel = helper.root_require('./models/base_model');
+
+module.exports = Todo = BaseModel.extend({
+
+    collectionName: function() {
+        return Todo.collectionName;
+    },
 
     // Default attributes for the todo item.
     defaults: function() {
@@ -18,4 +24,6 @@ module.exports = Todo = Backbone.Model.extend({
         });
     }
 
+}, {
+    collectionName: 'todos'
 });

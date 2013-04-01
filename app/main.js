@@ -1,11 +1,11 @@
 var Backbone = require('backbone');
-var Router = require('../route/router');
+var Router = require('./route/router');
 
 var router = new Router({
     paths: {
         controllers: '../controllers'
     },
-    routes: require('../route/routes')
+    routes: require('./route/routes')
 });
 
 Backbone.history.start({

@@ -5,7 +5,7 @@
 /**
  * Require the given path.
  *
- * @param {String} path
+ * @param {String} p
  * @return {Object} exports
  * @api public
  */

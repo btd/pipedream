@@ -42,7 +42,7 @@ Renderer.prototype.render = function(done) {
     var self = this,
         opt = this.options;
 
-    var data = '(function(){\n' + (opt.debug ? debugCode : 'function debug(){return debug;}') + '\n' + requireCode + this.paths.sort().reduce(function(str, path) {
+    var data = '(function(){\n var __isClient = true; ' + (opt.debug ? debugCode : 'function debug(){return debug;}') + '\n' + requireCode + this.paths.sort().reduce(function(str, path) {
         return str + self._render(path);
     }, '') + '\nwindow.require = require;' + '\n})();';
 
@@ -57,15 +57,15 @@ Renderer.prototype._render = function(filepath) {
 
     var opts = this.options,
         basepath = opts.basepath,
-        source = fs.readFileSync(filepath, 'utf8')
+        source = fs.readFileSync(filepath, 'utf8');
 
-        // match a basepath
-        basepath.some(function(base) {
-            if (base == filepath.substr(0, base.length)) {
-                filepath = filepath.substr(base.length);
-                return true;
-            }
-        });
+    // match a basepath
+    basepath.some(function(base) {
+        if (base == filepath.substr(0, base.length)) {
+            filepath = filepath.substr(base.length);
+            return true;
+        }
+    });
     var modName = moduleName(filepath);
 
     Object.keys(opts.shim).some(function(shimKey) {
