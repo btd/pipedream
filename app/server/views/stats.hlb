@@ -1,0 +1,5 @@
+{{#if done}}
+{{! need to add helper to check conditions }}
+<a id="clear-completed">Clear {{done}} completed item(s)</a>
+{{/if}}
+<div class="todo-count"><b>{{remaining}}</b> item(s) left</div>

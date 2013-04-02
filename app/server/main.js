@@ -11,10 +11,11 @@ var app = express();
 app.set('view engine', options.express['view engine']);
 app.engine('dust', cons.dust);
 app.engine('html', cons.ejs);
+app.engine('hlb', cons.handlebars);
 
 app.set('views', options.express.views);
 
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, './public')));
 
 app.use(express.logger('dev'));
 app.use(express.bodyParser());

@@ -16,25 +16,5 @@ connectDb(function(err, db) {
 
     app.db = db;
 
-    /*
-    collection: read
-    var todo = new TodoList();
-
-    todo.fetch({
-        success: function() {
-            console.log(todo.toJSON());
-        }
-    });*/
-
-
-    //model: read
-    var todo = new Todo();
-
-    todo.fetch({
-        success: function() {
-            console.log(todo.toJSON());
-        }
-    });
-
     app.listen(options.port);
 });

@@ -30,7 +30,6 @@ Backbone.sync = function(method, model, options) {
     var wholeObjCallback = function(err, result) {
         if(err) options.error(err);
 
-        console.log(result);
         options.success(result);
     };
 

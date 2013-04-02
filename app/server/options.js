@@ -10,7 +10,7 @@ var opts = {
         db: 'mongodb://localhost/pipe-development',
         port: 4343,
         express: {
-            'view engine': 'html',
+            'view engine': 'hlb',
             views: __dirname + '/views'
         },
         mongodb: {

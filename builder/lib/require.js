@@ -2,6 +2,7 @@
  * Require functions by TJ Holowaychuk <tj@learnboost.com>
  */
 
+window.global = window;
 /**
  * Require the given path.
  *
@@ -15,13 +16,16 @@ function require(p, parent) {
         fn = require.modules[path];
     if (!fn) throw new Error('failed to require "' + p + '" from ' + parent);
 
-    var module = {
-        id: path,
-        exports: {}
-    };
-    fn.call(module.exports, module, module.exports, require.relative(path));
+    if(!require.cache.hasOwnProperty(path)) {
+        var module = {
+            id: path,
+            exports: {}
+        };
+        fn.call(module.exports, module, module.exports, require.relative(path), window);
+        require.cache[path] = module.exports;
+    }
 
-    return module.exports;
+    return require.cache[path];
 }
 
 /**
@@ -29,6 +33,11 @@ function require(p, parent) {
  */
 
 require.modules = {};
+
+/**
+ * Results of execution of some code
+ */
+require.cache = {};
 
 /**
  * Resolve `path`.

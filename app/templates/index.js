@@ -1,1 +1,9 @@
-(function(){dust.register("app/templates/index",body_0);function body_0(chk,ctx){return chk.write("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><title>Todos</title><link rel=\"stylesheet\" href=\"/styles/todo.css\"/></head><body><div id=\"todoapp\"><header><h1>Todos</h1><input id=\"new-todo\" type=\"text\" placeholder=\"What needs to be done?\"></header><section id=\"main\"><input id=\"toggle-all\" type=\"checkbox\"><label for=\"toggle-all\">Mark all as complete</label><ul id=\"todo-list\"></ul></section><footer><a id=\"clear-completed\">Clear completed</a><div id=\"todo-count\"></div></footer></div><div id=\"instructions\">Double-click to edit a todo.</div><script src=\"/js/client.min.js\"></script></body></html>");}return body_0;})();
+var Handlebars = require("handlebars");  var template = Handlebars.template, templates = Handlebars.templates = Handlebars.templates || {};
+templates['index.hlb'] = template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [2,'>= 1.0.0-rc.3'];
+helpers = helpers || Handlebars.helpers; data = data || {};
+  
+
+
+  return "<!DOCTYPE html>\n<html lang=\"en\">\n\n<head>\n    <meta charset=\"utf-8\">\n    <title>Todos</title>\n    <link rel=\"stylesheet\" href=\"/styles/todo.css\"/>\n</head>\n\n<body>\n\n<div id=\"todoapp\">\n\n    <header>\n        <h1>Todos</h1>\n        <input id=\"new-todo\" type=\"text\" placeholder=\"What needs to be done?\">\n    </header>\n\n    <section id=\"main\">\n        <input id=\"toggle-all\" type=\"checkbox\">\n        <label for=\"toggle-all\">Mark all as complete</label>\n        <ul id=\"todo-list\"></ul>\n    </section>\n\n    <footer>\n        <a id=\"clear-completed\">Clear completed</a>\n        <div id=\"todo-count\"></div>\n    </footer>\n\n</div>\n\n<div id=\"instructions\">\n    Double-click to edit a todo.\n</div>\n\n<script src=\"/js/client.min.js\"></script>\n<script>\n    var todo = require('app/models/todo');\n</script>\n</body>\n</html>";
+  });

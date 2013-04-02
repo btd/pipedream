@@ -42,7 +42,7 @@ Renderer.prototype.render = function(done) {
     var self = this,
         opt = this.options;
 
-    var data = '(function(){\n var __isClient = true; ' + (opt.debug ? debugCode : 'function debug(){return debug;}') + '\n' + requireCode + this.paths.sort().reduce(function(str, path) {
+    var data = '(function(){\n var __isClient = true;\n ' + (opt.debug ? debugCode : 'function debug(){return debug;}') + '\n' + requireCode + this.paths.sort().reduce(function(str, path) {
         return str + self._render(path);
     }, '') + '\nwindow.require = require;' + '\n})();';
 
@@ -83,7 +83,7 @@ Renderer.prototype._render = function(filepath) {
     });
 
     if (this.options.aliases[modName]) {
-        return '\nrequire.register("' + modName + '", function(module, exports, require){ module.exports = require("' + this.options.aliases[modName] + '")});';
+        return '\nrequire.register("' + modName + '", function(module, exports, require, global){ module.exports = require("' + this.options.aliases[modName] + '")});';
 
     } else {
 
@@ -108,7 +108,7 @@ Renderer.prototype._render = function(filepath) {
         }).join('\n');
 
         // wrap
-        return '\nrequire.register("' + modName + '", ' + 'function(module, exports, require){\n' + source + '\n});';
+        return '\nrequire.register("' + modName + '", ' + 'function(module, exports, require, global){\n' + source + '\n});';
     }
 };
 

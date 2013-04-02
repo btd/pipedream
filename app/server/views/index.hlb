@@ -34,5 +34,8 @@
 </div>
 
 <script src="/js/client.min.js"></script>
+<script>
+    var todo = require('app/models/todo');
+</script>
 </body>
 </html>
