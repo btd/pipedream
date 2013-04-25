@@ -5,12 +5,12 @@ BUNDLE_FILE_NAME=client-bundle
 
 mkdir -p "$TPL_OUT_DIR"
 
-for TPL in `find app/server/views -name '*.hlb' | grep -ve /_`
+for TPL in `find app/server/views -name '*.hbs' | grep -ve /_`
 do
     BASE_FILE_NAME=$(basename "$TPL")
     FILE_NAME="${BASE_FILE_NAME%.*}"
     echo Compiling $TPL
-    ./node_modules/.bin/handlebars "$TPL" -c "handlebars" -f "$TPL_OUT_DIR/$FILE_NAME.js"
+    ./handlebars "$TPL" -c "handlebars" -f "$TPL_OUT_DIR/$FILE_NAME.js"
 done
 
 echo Combining to $BUNDLE_FILE_NAME

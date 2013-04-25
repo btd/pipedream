@@ -1,29 +1,29 @@
-var helper = require('../helper');
+module.exports = function(BaseModel) {
+    var Todo = BaseModel.extend({
 
-var BaseModel = helper.root_require('./models/base_model');
+        collectionName: function() {
+            return Todo.collectionName;
+        },
 
-module.exports = Todo = BaseModel.extend({
+        // Default attributes for the todo item.
+        defaults: function() {
+            return {
+                title: "empty todo...",
+                creationTime: Date.now(),
+                done: false
+            };
+        },
 
-    collectionName: function() {
-        return Todo.collectionName;
-    },
+        // Toggle the `done` state of this todo item.
+        toggle: function() {
+            this.save({
+                done: !this.get("done")
+            });
+        },
+        urlRoot: '/todos'
+    }, {
+        collectionName: 'todos'
+    });
 
-    // Default attributes for the todo item.
-    defaults: function() {
-        return {
-            title: "empty todo...",
-            creationTime: Date.now(),
-            done: false
-        };
-    },
-
-    // Toggle the `done` state of this todo item.
-    toggle: function() {
-        this.save({
-            done: !this.get("done")
-        });
-    }
-
-}, {
-    collectionName: 'todos'
-});
+    return Todo;
+};

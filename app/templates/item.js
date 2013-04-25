@@ -1,5 +1,5 @@
 var Handlebars = require("handlebars");  var template = Handlebars.template, templates = Handlebars.templates = Handlebars.templates || {};
-templates['item.hlb'] = template(function (Handlebars,depth0,helpers,partials,data) {
+templates['item.hbs'] = template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [2,'>= 1.0.0-rc.3'];
 helpers = helpers || Handlebars.helpers; data = data || {};
   var buffer = "", stack1, self=this, functionType="function", escapeExpression=this.escapeExpression;
@@ -23,4 +23,4 @@ function program1(depth0,data) {
   buffer += escapeExpression(stack1)
     + "\" />";
   return buffer;
-  });
+  }); module.exports = templates['item.hbs'];

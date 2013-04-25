@@ -3,32 +3,42 @@ var express = require('express'),
     cons = require('consolidate'),
     path = require('path');
 
-var ServerRouter = require('../route/server/router'),
+var //ServerRouter = require('../route/server/router'),
     options = require('./options');
 
-var app = express();
+require('../handlebars-helpers');
 
-app.set('view engine', options.express['view engine']);
-app.engine('dust', cons.dust);
-app.engine('html', cons.ejs);
-app.engine('hlb', cons.handlebars);
+require('express-resource');
 
-app.set('views', options.express.views);
+module.exports = function(callback) {
+    var app = express();
 
-app.use(express.static(path.join(__dirname, './public')));
+    app.set('view engine', options.express['view engine']);
+    app.engine('dust', cons.dust);
+    app.engine('html', cons.ejs);
+    app.engine('hbs', cons.handlebars);
 
-app.use(express.logger('dev'));
-app.use(express.bodyParser());
-app.use(express.methodOverride());
+    app.set('views', options.express.views);
 
-var router = new ServerRouter(_.extend(options, {
-    app: app
-}));
+    app.use(express.static(path.join(__dirname, './public')));
 
-app.use(app.router);
+    app.use(express.logger('dev'));
+    app.use(express.bodyParser());
+    app.use(express.methodOverride());
 
-app.configure('development', function() {
-    app.use(express.errorHandler());
-});
+    callback(app);
 
-module.exports = app;
+    app.resource('todos', require('./api/todo'));
+
+    //var router = new ServerRouter(_.extend({
+    //    app: app
+    //}, options));
+
+    app.use(app.router);
+
+    app.configure('development', function() {
+        app.use(express.errorHandler());
+    });
+
+    return app;
+};

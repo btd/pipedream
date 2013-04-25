@@ -6,67 +6,58 @@
 
 var _ = require('lodash');
 var Backbone = require('backbone');
+var TodoList = require('../collections').TodoList;
 
-module.exports = BaseRouter = Backbone.Router.extend({
-    initialize: function(options) {
-        this.options = options;
+module.exports = Backbone.Router.extend({
+    initialized: false,
 
-        this._controllersCache = options.controllers || {};
-        this.routes = [];
-
-        this._buildRoutes(options.routes || require(this.options.paths.routes));
-
-        _(this.routes).each(function(route) {
-            //for third argument _.bind will help
-            //third argument for callback will be a function(err, view_name, data) that will populate template
-            this.route(
-            route.pattern,
-            route.definition.controller + '#' + route.definition.action,
-            this._getAction(route.definition));
-        }, this);
+    routes: {
+        '': 'showTodo'
     },
 
-    _getController: function(name) {
-        var controller = this._controllersCache[name];
-        if (!controller) {
-            controller = require(this.options.paths.controllers + '/' + name);
-            this._controllersCache[name] = controller;
+    views: {
+        index: require('../views/app')
+    },
+
+    showTodo: function (render) {
+        var todos = new TodoList();
+        if (this.initialized) {
+            todos.fetch({
+                success: function () {
+                    render(null, 'index', {
+                        model: todos
+                    });
+                }
+            });
+        } else {
+            render(null, 'index', {
+                model: todos
+            });
         }
-        return controller;
-    },
-    _getAction: function(definition) {
-        return this._getController(definition.controller)[definition.action];
+
     },
 
-    _buildRoutes: function(routesBuild) {
+    route: function (route, name, callback) {
+        // first need to normalize input
+        if (!_.isRegExp(route)) route = this._routeToRegExp(route);
+        if (_.isFunction(name)) {
+            callback = name;
+            name = '';
+        }
+        if (!callback) callback = this[name];
+
         var that = this;
 
-        var takeRoute = function() {
-            var uriPattern = arguments[0];
-            var definition = Array.prototype.slice.call(arguments, 1);
-            that.routes.push({
-                pattern: that._parseUrl(uriPattern),
-                definition: that._parseDefinition(definition)
-            });
-        };
+        Backbone.Router.prototype.route.call(this, route, name, function () {
+            callback.apply(this, [function (err, viewName, data) {
+                if (err) throw err;
 
-        routesBuild(takeRoute);
-    },
+                data.viewInit = that.initialized;
 
-    _parseUrl: function(url) {
-        return url; // for now it will be as is
-    },
+                this.currentView = new that.views[viewName](data);
 
-    _parseDefinition: function(rawDefinition) {
-        if (rawDefinition.length < 1) throw new Error("Route definition is empty");
-
-        var definition = {};
-
-        var splittedAction = rawDefinition[0].split('#');
-        definition.controller = splittedAction[0];
-        definition.action = splittedAction[1] ? splittedAction[1] : 'index';
-
-        if (rawDefinition[1]) _.extend(definition, rawDefinition[1]);
-        return definition;
+                if (!that.initialized) that.initialized = true;
+            }].concat(arguments));
+        });
     }
 });

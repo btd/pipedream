@@ -8,6 +8,3 @@ Backbone.history.start({
     pushState: true
 });
 
-router.navigate('a/123/a/abac/sdfs', {
-    trigger: true
-});

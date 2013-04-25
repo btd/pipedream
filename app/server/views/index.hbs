@@ -9,7 +9,7 @@
 
 <body>
 
-<div id="todoapp">
+<div id="todoapp" data-view-model="{{json model}}">
 
     <header>
         <h1>Todos</h1>
@@ -35,7 +35,7 @@
 
 <script src="/js/client.min.js"></script>
 <script>
-    var todo = require('app/models/todo');
+    var app = require('app/main');
 </script>
 </body>
 </html>

@@ -1,11 +1,14 @@
 var Backbone = require('backbone');
 var app = require('./main');
 var ObjectID = require('mongodb').ObjectID;
+var _ = require('lodash');
 
 var collectionsCache = {
 };
 
 Backbone.sync = function(method, model, options) {
+    var app = Backbone.app;
+    if(!app) throw new Error('Run out of app context');
     if(!app.db) throw new Error('Not connected to db');
 
     var collectionName = model.collectionName();
@@ -54,7 +57,7 @@ Backbone.sync = function(method, model, options) {
         case 'patch':
         case 'update':
             //TODO update only changed
-            dbCollection.update({ _id: model.id }, data, wholeObjCallback);
+            dbCollection.update({ _id: model.id }, _.omit(data, '_id'), wholeObjCallback);
 
             break;
 

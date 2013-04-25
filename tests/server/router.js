@@ -1,67 +1,76 @@
-var Should = require('should');
-var request = require('supertest');
+var should = require('should'),
+    request = require('supertest'),
+    Backbone = require('backbone');
 
-var app = require('../../app/server/main');
+var router = Backbone.Router.extend({
+    routes: {
+        'a/:id': 'showTodo',
+        'a':     'index',
+
+        '':      'index',
+        'a/:id/:a/:b/*other': 'showTodo2'
+    },
+
+    showTodo: function(callback, id) {
+        callback(null, 'show', { id: id });
+    },
+
+    index: function(callback) {
+        callback(null, 'index');
+    },
+
+    showTodo2: function(callback, id, a, b, other) {
+        callback(null, 'manyParams', {
+           id: id,
+            a: a,
+            b: b,
+            other: other
+        });
+    }
+});
+
+var ServerRouter = require('../../app/route/server/router')(router);
+
+var app = require('../../app/server/main')(function(app) {
+    var router = new ServerRouter({
+        app: app
+    });
+});
 
 describe('server router', function() {
     it('should call specified in routes controller', function(done) {
 
         request(app)
             .get('/a')
-            .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
             .end(function(err, res){
                 if (err) return done(err);
 
-                res.body.should.be.eql({ view: 'index' });
+                res.text.should.be.eql('index');
 
                 request(app)
                     .get('/a/15')
-                    .set('Accept', 'application/json')
-                    .expect('Content-Type', /json/)
                     .end(function(err, res){
                         if (err) return done(err);
 
-                        res.body.should.be.eql({ id: "15", view: 'show' });
+                        res.text.should.be.eql('show 15');
                         request(app)
                             .get('/')
-                            .set('Accept', 'application/json')
-                            .expect('Content-Type', /json/)
                             .end(function(err, res){
                                 if (err) return done(err);
 
-                                res.body.should.be.eql({ view: 'index' });
+                                res.text.should.be.eql('index');
                                 done();
                             });
-                    });
-            });
-    });
-
-    it('should return html if we ask html and json if json', function(done) {
-        request(app)
-            .get('/a/15')
-            .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .end(function(err, res){
-                if (err) return done(err);
-
-                res.body.should.be.eql({ id: "15", view: 'show' });
-                request(app)
-                    .get('/')
-                    .expect('Content-Type', /html/)
-                    .end(function(err, res){
-                        if (err) return done(err);
-                        done();
                     });
             });
     });
     it('should parse params', function(done) {
         request(app)
             .get('/a/15/b/c/werw')
-            .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
             .end(function(err, res){
                 if (err) return done(err);
+
+                res.text.should.be.eql('Params 15 b c werw');
                 done();
             });
     });

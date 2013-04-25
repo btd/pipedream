@@ -1,6 +1,5 @@
 var Backbone = require('backbone');
 
 module.exports = Backbone.Model.extend({
-    idAttribute: '_id',
-    collectionName: null
+    idAttribute: '_id'
 });

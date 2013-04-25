@@ -3,7 +3,8 @@
     "shim": {
         "backbone": ["jquery"],
         "underscore": "_",
-        "jquery": "jQuery"
+        "jquery": "jQuery",
+        "handlebars": "Handlebars"
     },
     "aliases": {
         "underscore": "lodash"
